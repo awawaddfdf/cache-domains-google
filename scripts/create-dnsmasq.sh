@@ -52,12 +52,10 @@ while read -r entry; do
                                 fi
                                 parsed=$(echo ${fileentry} | sed -e "s/^\*\.//")
                                 for i in ${cacheip}; do
-                                        if ! grep -qx "address=/${parsed}/${i}" "${outputfile}"; then
-                                                echo "address=/${parsed}/${i}" >> "${outputfile}"
+                                        if grep -qx "address=/${parsed}/${i}" "${outputfile}"; then
+                                                continue
                                         fi
-                                        if ! grep -qx "local=/${parsed}/" "${outputfile}"; then
-                                                echo "local=/${parsed}/" >> "${outputfile}"
-                                        fi
+                                        echo "address=/${parsed}/${i}" >> "${outputfile}"
                                 done
                         done <<< $(cat ${basedir}/${filename} | sort);
                 done <<< $(jq -r ".cache_domains[${entry}].domain_files[$fileid]" ${path})
